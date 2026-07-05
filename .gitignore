@@ -1,0 +1,20 @@
+# Environment files
+.env
+
+# Python cache
+__pycache__/
+*.pyc
+
+# Jupyter checkpoints
+.ipynb_checkpoints/
+
+# Data files (too large for git, and often contain sensitive info)
+data/*.csv
+data/*.db
+data/*.sqlite
+
+# OS-specific files
+.DS_Store
+
+# IDE
+.vscode/
