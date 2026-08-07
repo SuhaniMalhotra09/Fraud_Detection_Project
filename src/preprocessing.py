@@ -54,3 +54,13 @@ print("Before SMOTE, training class counts:")
 print(Y_train.value_counts())
 print("After SMOTE, training class counts:")
 print(Y_train_smote.value_counts())
+pipeline_smote = Pipeline([
+    ("scaler", StandardScaler()),
+    ("model", LogisticRegression(max_iter=1000))
+])
+
+pipeline_smote.fit(X_train_smote, Y_train_smote)
+
+Y_pred_smote = pipeline_smote.predict(X_test)
+print("=== SMOTE Model ===")
+print(classification_report(Y_test, Y_pred_smote))
