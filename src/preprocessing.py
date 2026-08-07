@@ -6,6 +6,9 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import classification_report
 from imblearn.over_sampling import SMOTE
+from sklearn.ensemble import RandomForestClassifier
+from xgboost import XGBClassifier
+from lightgbm import LGBMClassifier
 
 
 
@@ -64,3 +67,22 @@ pipeline_smote.fit(X_train_smote, Y_train_smote)
 Y_pred_smote = pipeline_smote.predict(X_test)
 print("=== SMOTE Model ===")
 print(classification_report(Y_test, Y_pred_smote))
+
+models = {
+    "Random Forest": RandomForestClassifier(random_state=42),
+    "XGBoost": XGBClassifier(random_state=42, eval_metric="logloss"),
+    "LightGBM": LGBMClassifier(random_state=42)
+}
+
+results = {}
+
+for name, model in models.items():
+    pipeline_model = Pipeline([
+        ("scaler", StandardScaler()),
+        ("model", model)
+    ])
+    pipeline_model.fit(X_train_smote, Y_train_smote)
+    Y_pred_model = pipeline_model.predict(X_test)
+
+    print(f"=== {name} ===")
+    print(classification_report(Y_test, Y_pred_model))
