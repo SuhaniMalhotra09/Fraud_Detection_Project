@@ -5,6 +5,9 @@ from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import StandardScaler
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import classification_report
+from imblearn.over_sampling import SMOTE
+
+
 
 connection = sqlite3.connect("data/fraud_detection.db")
 df = pd.read_sql_query("SELECT * FROM transaction_features", connection)
@@ -44,3 +47,10 @@ pipeline_weighted.fit(X_train, Y_train)
 Y_pred_weighted = pipeline_weighted.predict(X_test)
 print("=== Class Weighted Model ===")
 print(classification_report(Y_test, Y_pred_weighted))
+smote = SMOTE(random_state=42)
+X_train_smote, Y_train_smote = smote.fit_resample(X_train, Y_train)
+
+print("Before SMOTE, training class counts:")
+print(Y_train.value_counts())
+print("After SMOTE, training class counts:")
+print(Y_train_smote.value_counts())
