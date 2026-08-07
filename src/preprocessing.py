@@ -34,3 +34,13 @@ print("Test accuracy:", test_accuracy)
 Y_pred = pipeline.predict(X_test)
 print(classification_report(Y_test, Y_pred))
 
+pipeline_weighted = Pipeline([
+    ("scaler", StandardScaler()),
+    ("model", LogisticRegression(max_iter=1000, class_weight="balanced"))
+])
+
+pipeline_weighted.fit(X_train, Y_train)
+
+Y_pred_weighted = pipeline_weighted.predict(X_test)
+print("=== Class Weighted Model ===")
+print(classification_report(Y_test, Y_pred_weighted))
