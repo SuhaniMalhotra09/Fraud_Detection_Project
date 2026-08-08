@@ -2,6 +2,9 @@
 
 An end-to-end fraud detection pipeline — from SQL-based feature engineering through model comparison, hyperparameter tuning, explainability, and deployment as a live API.
 
+## Quick summary:
+Built an end-to-end fraud detection pipeline (SQL → feature engineering → model tuning → SHAP → FastAPI deployment) on a 0.17%-imbalanced dataset. Best model: 63% recall via a properly-tuned Random Forest — including catching and fixing a real cross-validation methodology bug along the way.
+
 ## Problem Statement
 
 Credit card fraud costs financial institutions billions annually, and the challenge isn't just detecting fraud — it's doing so in a dataset where fraud represents just 0.17% of all transactions. This asymmetry means a model can achieve 99.83% accuracy while catching zero fraud cases, making naive accuracy-based approaches actively misleading. This project builds an end-to-end fraud detection pipeline — from SQL-based feature engineering through model comparison, tuning, explainability, and deployment — with particular attention to the precision-recall tradeoffs inherent to severely imbalanced classification.
