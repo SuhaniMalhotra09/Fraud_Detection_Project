@@ -9,6 +9,8 @@ from imblearn.over_sampling import SMOTE
 from sklearn.ensemble import RandomForestClassifier
 from xgboost import XGBClassifier
 from lightgbm import LGBMClassifier
+from sklearn.model_selection import RandomizedSearchCV
+from sklearn.model_selection import StratifiedKFold
 
 
 
@@ -86,3 +88,65 @@ for name, model in models.items():
 
     print(f"=== {name} ===")
     print(classification_report(Y_test, Y_pred_model))
+
+    param_distributions = {
+    "model__n_estimators": [100, 200, 300],
+    "model__max_depth": [5, 10, 20, None],
+    "model__min_samples_split": [2, 5, 10],
+    "model__class_weight": ["balanced", None]
+}
+
+rf_pipeline = Pipeline([
+    ("scaler", StandardScaler()),
+    ("model", RandomForestClassifier(random_state=42))
+])
+
+random_search = RandomizedSearchCV(
+    rf_pipeline,
+    param_distributions=param_distributions,
+    n_iter=10,
+    scoring="recall",
+    cv=3,
+    random_state=42,
+    n_jobs=-1
+)
+
+random_search.fit(X_train_smote, Y_train_smote)
+
+print("Best parameters:", random_search.best_params_)
+
+Y_pred_tuned_rf = random_search.predict(X_test)
+print("=== Tuned Random Forest ===")
+print(classification_report(Y_test, Y_pred_tuned_rf))
+
+
+param_distributions_v2 = {
+    "model__n_estimators": [100, 200, 300],
+    "model__max_depth": [5, 10, 20, None],
+    "model__min_samples_split": [2, 5, 10],
+}
+
+rf_pipeline_v2 = Pipeline([
+    ("scaler", StandardScaler()),
+    ("model", RandomForestClassifier(random_state=42, class_weight="balanced"))
+])
+
+stratified_cv = StratifiedKFold(n_splits=3, shuffle=True, random_state=42)
+
+random_search_v2 = RandomizedSearchCV(
+    rf_pipeline_v2,
+    param_distributions=param_distributions_v2,
+    n_iter=10,
+    scoring="recall",
+    cv=stratified_cv,
+    random_state=42,
+    n_jobs=-1
+)
+
+random_search_v2.fit(X_train, Y_train)
+
+print("Best parameters (v2):", random_search_v2.best_params_)
+
+Y_pred_tuned_rf_v2 = random_search_v2.predict(X_test)
+print("=== Tuned Random Forest (v2 - trained on real imbalanced data) ===")
+print(classification_report(Y_test, Y_pred_tuned_rf_v2))
